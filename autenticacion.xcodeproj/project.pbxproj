@@ -7,14 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		86448F12DA98BDF29B119622 /* Pods_autenticacion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 941C6E32301151E93F0B64CD /* Pods_autenticacion.framework */; };
+		DC0308A91E829BA400B0DFFD /* Datos.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0308A81E829BA400B0DFFD /* Datos.swift */; };
+		DC2826C01E7A7D290060F57A /* VistaSesionIniciada.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2826BF1E7A7D290060F57A /* VistaSesionIniciada.swift */; };
+		DC2826C21E7A84690060F57A /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC2826C11E7A84690060F57A /* AdSupport.framework */; };
+		DC2AF8581E83B506006CA4F3 /* VistaConfiguracion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2AF8571E83B506006CA4F3 /* VistaConfiguracion.swift */; };
 		DCC671751E795D510057D0E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC671741E795D510057D0E9 /* AppDelegate.swift */; };
 		DCC671771E795D510057D0E9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC671761E795D510057D0E9 /* ViewController.swift */; };
 		DCC6717A1E795D510057D0E9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCC671781E795D510057D0E9 /* Main.storyboard */; };
 		DCC6717C1E795D510057D0E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCC6717B1E795D510057D0E9 /* Assets.xcassets */; };
 		DCC6717F1E795D510057D0E9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCC6717D1E795D510057D0E9 /* LaunchScreen.storyboard */; };
+		DCC671871E795E1F0057D0E9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC671861E795E1F0057D0E9 /* GoogleService-Info.plist */; };
+		DCCD229E1E7A8CAE00F00D32 /* UIViewController+Alerts.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCD229D1E7A8CAE00F00D32 /* UIViewController+Alerts.m */; };
+		DCCD22A01E7AA33700F00D32 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCD229F1E7AA33700F00D32 /* Bolts.framework */; };
+		DCCD22A21E7AA35B00F00D32 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCD22A11E7AA35B00F00D32 /* FBSDKCoreKit.framework */; };
+		DCCD22A41E7AA37600F00D32 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCD22A31E7AA37600F00D32 /* FBSDKLoginKit.framework */; };
+		DCCD22A61E7AA38200F00D32 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCD22A51E7AA38200F00D32 /* FBSDKShareKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5203C39E15974D848138764E /* Pods-autenticacion.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-autenticacion.debug.xcconfig"; path = "Pods/Target Support Files/Pods-autenticacion/Pods-autenticacion.debug.xcconfig"; sourceTree = "<group>"; };
+		61F7400EF2E198DA1C3A4576 /* Pods-autenticacion.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-autenticacion.release.xcconfig"; path = "Pods/Target Support Files/Pods-autenticacion/Pods-autenticacion.release.xcconfig"; sourceTree = "<group>"; };
+		941C6E32301151E93F0B64CD /* Pods_autenticacion.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_autenticacion.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC0308A81E829BA400B0DFFD /* Datos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datos.swift; sourceTree = "<group>"; };
+		DC2826BF1E7A7D290060F57A /* VistaSesionIniciada.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VistaSesionIniciada.swift; sourceTree = "<group>"; };
+		DC2826C11E7A84690060F57A /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		DC2AF8571E83B506006CA4F3 /* VistaConfiguracion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VistaConfiguracion.swift; sourceTree = "<group>"; };
 		DCC671711E795D510057D0E9 /* autenticacion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = autenticacion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC671741E795D510057D0E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DCC671761E795D510057D0E9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +40,17 @@
 		DCC6717B1E795D510057D0E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DCC6717E1E795D510057D0E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DCC671801E795D510057D0E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DCC671861E795E1F0057D0E9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		DCCD22991E7A87E600F00D32 /* autenticacion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = autenticacion.entitlements; sourceTree = "<group>"; };
+		DCCD229B1E7A8C8E00F00D32 /* UIViewController+Alerts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+Alerts.h"; path = "../aplicacion/aplicacion/UIViewController+Alerts.h"; sourceTree = "<group>"; };
+		DCCD229C1E7A8CAE00F00D32 /* autenticacion-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "autenticacion-Bridging-Header.h"; sourceTree = "<group>"; };
+		DCCD229D1E7A8CAE00F00D32 /* UIViewController+Alerts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+Alerts.m"; path = "../aplicacion/aplicacion/UIViewController+Alerts.m"; sourceTree = "<group>"; };
+		DCCD229F1E7AA33700F00D32 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "FacebookSDKs-iOS-4.20.1/Bolts.framework"; sourceTree = "<group>"; };
+		DCCD22A11E7AA35B00F00D32 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "FacebookSDKs-iOS-4.20.1/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
+		DCCD22A31E7AA37600F00D32 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "FacebookSDKs-iOS-4.20.1/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
+		DCCD22A51E7AA38200F00D32 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "FacebookSDKs-iOS-4.20.1/FBSDKShareKit.framework"; sourceTree = "<group>"; };
+		DCDF31E71E8159DA00A976A2 /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = System/Library/Frameworks/WatchKit.framework; sourceTree = SDKROOT; };
+		DCF0B1151E8BCB130063CDBD /* Pods_MessagingExampleSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods_MessagingExampleSwift.framework; path = "../../Library/Developer/Xcode/DerivedData/MessagingExample-ahuiggxkpzvkvgguxzoahhwutugy/Build/Products/Debug-iphoneos/Pods_MessagingExampleSwift.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +58,36 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC2826C21E7A84690060F57A /* AdSupport.framework in Frameworks */,
+				DCCD22A61E7AA38200F00D32 /* FBSDKShareKit.framework in Frameworks */,
+				DCCD22A41E7AA37600F00D32 /* FBSDKLoginKit.framework in Frameworks */,
+				DCCD22A21E7AA35B00F00D32 /* FBSDKCoreKit.framework in Frameworks */,
+				DCCD22A01E7AA33700F00D32 /* Bolts.framework in Frameworks */,
+				86448F12DA98BDF29B119622 /* Pods_autenticacion.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		168E36EF298DF6F29424503C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5203C39E15974D848138764E /* Pods-autenticacion.debug.xcconfig */,
+				61F7400EF2E198DA1C3A4576 /* Pods-autenticacion.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		DCC671681E795D510057D0E9 = {
 			isa = PBXGroup;
 			children = (
+				DCCD229A1E7A8C6200F00D32 /* Supporting Files */,
+				DCC671861E795E1F0057D0E9 /* GoogleService-Info.plist */,
 				DCC671731E795D510057D0E9 /* autenticacion */,
 				DCC671721E795D510057D0E9 /* Products */,
+				168E36EF298DF6F29424503C /* Pods */,
+				F382A8137866531CCF6ABC24 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +102,43 @@
 		DCC671731E795D510057D0E9 /* autenticacion */ = {
 			isa = PBXGroup;
 			children = (
+				DCCD22991E7A87E600F00D32 /* autenticacion.entitlements */,
 				DCC671741E795D510057D0E9 /* AppDelegate.swift */,
 				DCC671761E795D510057D0E9 /* ViewController.swift */,
 				DCC671781E795D510057D0E9 /* Main.storyboard */,
 				DCC6717B1E795D510057D0E9 /* Assets.xcassets */,
 				DCC6717D1E795D510057D0E9 /* LaunchScreen.storyboard */,
 				DCC671801E795D510057D0E9 /* Info.plist */,
+				DC2826BF1E7A7D290060F57A /* VistaSesionIniciada.swift */,
+				DC0308A81E829BA400B0DFFD /* Datos.swift */,
+				DC2AF8571E83B506006CA4F3 /* VistaConfiguracion.swift */,
 			);
 			path = autenticacion;
+			sourceTree = "<group>";
+		};
+		DCCD229A1E7A8C6200F00D32 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DCCD229D1E7A8CAE00F00D32 /* UIViewController+Alerts.m */,
+				DCCD229B1E7A8C8E00F00D32 /* UIViewController+Alerts.h */,
+				DCCD229C1E7A8CAE00F00D32 /* autenticacion-Bridging-Header.h */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F382A8137866531CCF6ABC24 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DCF0B1151E8BCB130063CDBD /* Pods_MessagingExampleSwift.framework */,
+				DCDF31E71E8159DA00A976A2 /* WatchKit.framework */,
+				DCCD22A51E7AA38200F00D32 /* FBSDKShareKit.framework */,
+				DCCD22A31E7AA37600F00D32 /* FBSDKLoginKit.framework */,
+				DCCD22A11E7AA35B00F00D32 /* FBSDKCoreKit.framework */,
+				DCCD229F1E7AA33700F00D32 /* Bolts.framework */,
+				DC2826C11E7A84690060F57A /* AdSupport.framework */,
+				941C6E32301151E93F0B64CD /* Pods_autenticacion.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +148,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DCC671831E795D510057D0E9 /* Build configuration list for PBXNativeTarget "autenticacion" */;
 			buildPhases = (
+				4D2E22303ECAE7966267D177 /* [CP] Check Pods Manifest.lock */,
 				DCC6716D1E795D510057D0E9 /* Sources */,
 				DCC6716E1E795D510057D0E9 /* Frameworks */,
 				DCC6716F1E795D510057D0E9 /* Resources */,
+				D20FF5D71FA95D448DA07338 /* [CP] Embed Pods Frameworks */,
+				FDBED6B67A66B7E45F284E36 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -96,7 +176,17 @@
 				TargetAttributes = {
 					DCC671701E795D510057D0E9 = {
 						CreatedOnToolsVersion = 8.1;
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = ZP484DY855;
+						LastSwiftMigration = 0810;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -124,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCC6717F1E795D510057D0E9 /* LaunchScreen.storyboard in Resources */,
+				DCC671871E795E1F0057D0E9 /* GoogleService-Info.plist in Resources */,
 				DCC6717C1E795D510057D0E9 /* Assets.xcassets in Resources */,
 				DCC6717A1E795D510057D0E9 /* Main.storyboard in Resources */,
 			);
@@ -131,13 +222,65 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4D2E22303ECAE7966267D177 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D20FF5D71FA95D448DA07338 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-autenticacion/Pods-autenticacion-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FDBED6B67A66B7E45F284E36 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-autenticacion/Pods-autenticacion-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DCC6716D1E795D510057D0E9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				DCC671771E795D510057D0E9 /* ViewController.swift in Sources */,
+				DC2AF8581E83B506006CA4F3 /* VistaConfiguracion.swift in Sources */,
+				DC2826C01E7A7D290060F57A /* VistaSesionIniciada.swift in Sources */,
 				DCC671751E795D510057D0E9 /* AppDelegate.swift in Sources */,
+				DCCD229E1E7A8CAE00F00D32 /* UIViewController+Alerts.m in Sources */,
+				DC0308A91E829BA400B0DFFD /* Datos.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,7 +346,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -247,7 +390,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -258,24 +401,49 @@
 		};
 		DCC671841E795D510057D0E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5203C39E15974D848138764E /* Pods-autenticacion.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = autenticacion/autenticacion.entitlements;
+				DEVELOPMENT_TEAM = ZP484DY855;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FacebookSDKs-iOS-4.20.1",
+				);
 				INFOPLIST_FILE = autenticacion/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = j.autenticacion;
+				PRODUCT_BUNDLE_IDENTIFIER = es.uma.ios.fidelizacion;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "98dca4c9-d0aa-4ff2-b7be-6051a1d6c830";
+				PROVISIONING_PROFILE_SPECIFIER = Jessica;
+				SWIFT_OBJC_BRIDGING_HEADER = "autenticacion-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		DCC671851E795D510057D0E9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 61F7400EF2E198DA1C3A4576 /* Pods-autenticacion.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = autenticacion/autenticacion.entitlements;
+				DEVELOPMENT_TEAM = ZP484DY855;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FacebookSDKs-iOS-4.20.1",
+				);
 				INFOPLIST_FILE = autenticacion/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = j.autenticacion;
+				PRODUCT_BUNDLE_IDENTIFIER = es.uma.ios.fidelizacion;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "98dca4c9-d0aa-4ff2-b7be-6051a1d6c830";
+				PROVISIONING_PROFILE_SPECIFIER = Jessica;
+				SWIFT_OBJC_BRIDGING_HEADER = "autenticacion-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -299,6 +467,7 @@
 				DCC671851E795D510057D0E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
