@@ -32,6 +32,9 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
         
         super.viewDidLoad()
         
+        //Eliminar el botón de "back"
+        self.navigationItem.setHidesBackButton(true, animated: false)
+        
         //Comprobar si hay algún usuario con la sesión iniciada, y en ese caso cargar la siguiente vista
         
        /*FIRAuth.auth()?.addStateDidChangeListener { auth, user in
@@ -92,7 +95,7 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
         print("-------------------viewWillDisappear------------------")
         super.viewWillDisappear(animated)
         FIRAuth.auth()?.removeStateDidChangeListener(handle!)
-    }*/
+    }
     
     //Para que no se muestre la navigation bar
     override public func viewWillAppear(_ animated: Bool) {
@@ -105,7 +108,7 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
         print("-------------------viewWillDisappear------------------")
         self.navigationController?.isNavigationBarHidden = false
         super.viewWillDisappear(animated)
-    }
+    }*/
     
 
     @IBAction func pulsaRegistrarse(_ sender: Any) {

@@ -18,7 +18,7 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
     var ref2: FIRDatabaseReference!
     let userID = FIRAuth.auth()?.currentUser?.uid
     let username = FIRAuth.auth()?.currentUser?.displayName
-    
+
     override func viewDidLoad() {
         
         super.viewDidLoad()

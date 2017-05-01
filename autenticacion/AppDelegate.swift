@@ -20,6 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
     var window: UIWindow?
     let gcmMessageIDKey = "gcm.message_id"
     let locationManager = CLLocationManager()
+    /*var ref: FIRDatabaseReference!
+    let userID = FIRAuth.auth()?.currentUser?.uid*/
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         print("-------------------applicationdidFinishLaunchingWithOptions------------------")
@@ -152,6 +154,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
         print("-------------------tokenRefreshNotification------------------")
         if let refreshedToken = FIRInstanceID.instanceID().token() {
             print("InstanceID token: \(refreshedToken)")
+            /*//Guardar el token en la base de datos para luego poder leerlo en la cloud function
+            self.ref.child("users/\(userID!)/tokens").setValue(refreshedToken)*/
         }
         
         // Connect to FCM since connection may have failed when attempted before having a token.
@@ -214,10 +218,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("-------------------locationManagerdidEnterRegion------------------")
         if (region as? CLBeaconRegion) != nil {
-            let notification = UILocalNotification()
-            notification.alertBody = "Entra en la region de un beacon"
+            /*let beacon = region as! CLBeaconRegion
+            let major = beacon.major //->Problema: al estar la región definida por el UUID y no por el major/minor, al tratar de conseguir el major se obtiene nil
+            print(major)*/
+            /*let notification = UILocalNotification()
+            notification.alertBody = "Entra en la region de beacon" //\(mistiendas.obtenerTienda(major: major)
             notification.soundName = "Default"
-            UIApplication.shared.presentLocalNotificationNow(notification)
+            UIApplication.shared.presentLocalNotificationNow(notification)*/
+            
+            //-> hace que se inicie el ranging
+            locationManager.requestState(for: region)
         }
         
     }
@@ -225,12 +235,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("-------------------locationManagerdidExitRegion------------------")
         if (region as? CLBeaconRegion) != nil {
-            let notification = UILocalNotification()
-            notification.alertBody = "Sale en la region de un beacon"
+            /*let beacon = region as! CLBeaconRegion
+            let major = beacon.proximityUUID
+            print(major)*/
+            /*let notification = UILocalNotification()
+            notification.alertBody = "Sale de la region de beacon"
             notification.soundName = "Default"
-            UIApplication.shared.presentLocalNotificationNow(notification)
+            UIApplication.shared.presentLocalNotificationNow(notification)*/
+            
+            //-> hace que se inicie el ranging
+            locationManager.requestState(for: region)
         }
     }
+    //El ranging no se hace cuando la app está en segundo plano, por eso hay que hacer monitoring. Para el buen funcionamiento de la app será necesario hacer diferentes regiones teniendo en cuenta major y minor, para que de esta forma se  envien de manera correcta los eventos
 }
 
 // [START ios_10_message_handling]

@@ -28,4 +28,14 @@ class ColeccionDeTiendas {
     func switchState (position: Int, state: String){
         tiendas[position][2] = state
     }
+    
+    func obtenerTienda (major: String) -> String{
+        var tienda = ""
+        for i in 0...12{
+            if(tiendas[i][1] == major){
+                tienda = tiendas[i][0]
+            }
+        }
+        return tienda
+    }
 }
