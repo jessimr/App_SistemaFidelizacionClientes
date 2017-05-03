@@ -18,15 +18,26 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
     var locationManager: CLLocationManager!
     
     //Los estados de majorAnterior=0 y minorAnterior=0 significa que no estoy conectada a ningún beacon. Con lo cual ningún beacon de ninguna tienda puede tener estos valores a 0.
-    var majorAnterior: NSNumber = 0
-    var minorAnterior: NSNumber = 0
+    //var majorAnterior: NSNumber = 0  //Una posible solución para el caso de sobre escritura de major y minor en el locationManager(:didRangeBeacons) con el uso de varias regiones, sería tener un array de major y minor, cada uno asociado a una región.
+    //var minorAnterior: NSNumber = 0
+    
+    //b es una matriz en la que se asocia cada region con el valor del majorAnterior y minorAnterior (inicialmente 0)
+    var anterior: [[String]] = [["2000", "0", "0" ],
+                               ["1000", "0", "0"],
+                               ["1001", "0", "0"],
+                               ["1002", "0", "0"],
+                               ["1003", "0", "0"]]
+    
+    //var beaconAnterior: NSNumber = 0  //-> no sirve pa na
+    
+    var sitio: [String] = ["el escaparate", "la puerta", "la caja", "los probadores"]
     
     var nombreUsuario: String?
     var emailUsuario: String?
     var fotoURL: URL?
     var uid: String?
     var tiendas: [Int] = []
-    var estadoAnterior: Bool = false
+    var estadoAnterior: Bool = false //tb se sobreescribe en locationManager(:didRangeBeacons) con el uso de varias regiones, creo que su uso no es 100x100 necesario, se podría sustituir por lo de la suma de major y mino != 0 -> comprobar bien, en caso de que no se pueda eliminar, una posible solución es hacer un array como con los major y minor.
     
     let uuid = UUID(uuidString:   "00000000-0000-0000-0000-000000000001")!
     
@@ -35,6 +46,8 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
     
     var newRegions = Set<CLRegion>()
     var monitoredRegions = Set<CLRegion>()
+    var rangedRegions = Set<CLRegion>()
+    var initialRegion = Set<CLRegion>()   //Solo va a contener una region, la correspondiente al centro comercial
     
     var mistiendas = ColeccionDeTiendas()
     
@@ -129,10 +142,12 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
         //Region -> el centro comercial
         //let beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: "MyBeacon")
         let beaconRegion = CLBeaconRegion(proximityUUID: uuid, major: 200, minor: 0, identifier: "MyBeacon2000")
-        
         locationManager.startMonitoring(for: beaconRegion)
         locationManager.startRangingBeacons(in: beaconRegion)
         locationManager.startUpdatingLocation() //nuevo
+        
+        initialRegion.insert(beaconRegion)
+        
     }
     
     
@@ -160,13 +175,17 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
+    func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {//Se realiza por cada region activada periodicamente -> cambiar el uso de variables globales en esta función ya que conllevan a error (majorAnterior, minorAnterior....)
         print("-------------------locationManagerdidRangeBeacons------------------")
         //Para que aparezca en los eventos el UserID
         FIRAnalytics.setUserID(emailUsuario)
         
+        var majorAnterior: Int = 0
+        var minorAnterior: Int = 0
+        
         //Regiones monitorizadas
-        monitoredRegions = locationManager.monitoredRegions
+        monitoredRegions = locationManager.monitoredRegions //The location manager persists region data between launches of your app.
+        rangedRegions = locationManager.rangedRegions
         
         print("----------monitoredRegions")
         //Mostrar por pantalla las regiones incluidas en monitoredRegions
@@ -175,20 +194,40 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
         }
         print("-----------------------")
         
+        print("----------rangedRegions")
+        //Mostrar por pantalla las regiones incluidas en monitoredRegions
+        for reg in self.rangedRegions{
+            print(reg)
+        }
+        print("-----------------------")
+        
+        
+        
+        //Intentar monitorizar las nuevas regiones de los vecinos y parar de monitorizar regiones que ya no interesan -> las regiones de los vecinos en el database
+        //Tomo major y minor de la región, los convierto a String y los "sumo"
+        let mj = String(describing: region.major!)
+        //print ("------------>\(mj)<-----------")
+        let mn = String(describing: region.minor!)
+        //print ("------------>\(mn)<-----------")
+        let suma = mj+mn
+        print ("------------>\(suma)<-----------")
+        
+        
+        //Obtener valores de major y minor anteriores
+        for i in 0...4 {
+            if(anterior[i][0] == suma){
+                majorAnterior = Int (anterior[i][1])!
+                minorAnterior = Int (anterior[i][2])!
+            }
+        }
+        
+        
         if beacons.count > 0 { //si hay algún beacon cerca
             let beacon = beacons[0]
             update(distance: beacon.proximity, major: beacon.major, minor: beacon.minor)
 
+            //beaconAnterior = beacon.major
             
-            
-            //Intentar monitorizar las nuevas regiones de los vecinos y parar de monitorizar regiones que ya no interesan -> las regiones de los vecinos en el database
-            //Tomo major y minor del beacon, los convierto a String y los "sumo"
-            let mj = String(describing: beacon.major)
-            //print ("------------>\(mj)<-----------")
-            let mn = String(describing: beacon.minor)
-            //print ("------------>\(mn)<-----------")
-            let suma = mj+mn
-            //print ("------------>\(suma)<-----------")
             
             //Leer de la base de datos los beacos a monitorizar
             self.ref2.child("beacons").child(suma).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -252,12 +291,11 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
                 
             })
             
-            
             //si el beacon es mismo que el anterior no enviar evento
-            if((beacon.major == majorAnterior)&&(beacon.minor == minorAnterior)){
-                //print("Sigo conectado al mismo beacon por lo que no envío evento")
+            if((beacon.major == majorAnterior as NSNumber)&&(beacon.minor == minorAnterior as NSNumber)){
+                print("Sigo conectado al mismo beacon por lo que no envío evento")
             }else{
-                //print("Estoy conectado a otro beacon")
+                print("Estoy conectado a otro beacon") //-> Realmente pasa de no estar conectado al beacon asociado a la región a si estarlo (en las regiones solo hay un beacon)  -> Solo entrará en este else cuando se producza el cambio de "no conectado" a "conectado", una vez conectado al beacon no volverá a entrar (a no ser que nos deconectemos y nos volvamos a conectar)
                 
                 //hacer comprobación de si el major del beacon que estoy detectando pertenece a alguna de las tiendas seleccionadas en la configuración del usuario, si pertenece hago lo demás, sino no
                 var pertenece: Bool = false
@@ -269,16 +307,16 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
                
                 
                 if (pertenece){ //Si el beacon pertenece a la lista de tiendas envío evento siempre
-                    estadoAnterior = true
+                    //estadoAnterior = true
                     
                     //Envio notificación al usuario indicandole en qué tienda está
                     let notification = UILocalNotification()
-                    notification.alertBody = "Está en la tienda \(mistiendas.obtenerTienda(major: String(describing: beacon.major)))"
+                    notification.alertBody = "Está en \(sitio[beacon.minor as Int]) de la tienda \(mistiendas.obtenerTienda(major: String(describing: beacon.major)))"
                     notification.soundName = "Default"
                     UIApplication.shared.presentLocalNotificationNow(notification)
                     
                     //conexión con firebase para enviar major minor y nombre usuario, firebase debe añadir marca de tiempo
-                    FIRAnalytics.logEvent(withName: "beacon", parameters: [
+                    FIRAnalytics.logEvent(withName: "EntraEnArea", parameters: [
                         "major": beacon.major,
                         "minor": beacon.minor,
                         "usuario": emailUsuario as! NSString,
@@ -286,9 +324,9 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
                     print("Envío evento, estoy conectado al beacon \(beacon.major)")
                     
                     //Si cambio de tienda 
-                    if (majorAnterior != beacon.major){
+                    if (majorAnterior as NSNumber != beacon.major){
                         //Si antes estaba suscrito a algún topic
-                        if (((majorAnterior as Int) + (minorAnterior as Int)) != 0){
+                        if ((majorAnterior + minorAnterior) != 0){
                             //Elimino la suscripción al topic anterior
                             FIRMessaging.messaging().unsubscribe(fromTopic: "/topics/\(majorAnterior)")
                             print("Unsubscribed to \(majorAnterior) topic")
@@ -298,13 +336,20 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
                         print("Subscribed to \(beacon.major) topic")
                     }
                 
-                    //Cambiamos los valores de major y minor anterior por lo actuales
-                    majorAnterior = beacon.major
-                    minorAnterior = beacon.minor
+                    //Cambiamos los valores de major y minor anterior por los actuales
+                    for i in 0...4 {
+                        if(anterior[i][0] == suma){
+                            anterior[i][1] = String (describing: beacon.major)
+                            anterior[i][2] = String (describing: beacon.minor)
+                        }
+                    }
                     
                     
                 }else{ //Si el beacon no pertenece a la lista de tiendas solo envío evento si el beacon anterior si pertenecía a uno de la lista, para indicar que me he ido
-                    if(estadoAnterior){ //Si el beacon de antes estaba en la lista
+                    //if(estadoAnterior){ //Si el beacon de antes estaba en la lista
+                    
+                    //Realmente aquí nunca entra, ya que hemos asociado cada beacon con una región distinta -> las regiones solo tienen 1 beacon asociado, por tanto dentro de una misma región no se va a producir el paso de un beacon a otro
+                    if ((majorAnterior + minorAnterior) != 0){
                         
                         //Envio notificación al usuario indicandole en qué tienda está
                         let notification = UILocalNotification()
@@ -313,23 +358,27 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
                         UIApplication.shared.presentLocalNotificationNow(notification)
                         
                         //Registrar evento de desconexión de beacon
-                        FIRAnalytics.logEvent(withName: "beacon", parameters: [
-                            "major": majorAnterior ,
-                            "minor": majorAnterior,
+                        FIRAnalytics.logEvent(withName: "CambiaDeArea", parameters: [
+                            "major": majorAnterior as NSObject ,
+                            "minor": majorAnterior as NSObject,
                             "usuario": emailUsuario as! NSString
                             ])
                         print("Envío evento, he pasado del beacon \(majorAnterior) a uno no reconocido \(beacon.major)")
                         
                         //Cambiamos el estado anterior a false para que no se registren más eventos en caso de encontrarnos con otro beacon que no está en la lista o en caso de que este sea el último beacon que vemos
-                        estadoAnterior = false
+                        //estadoAnterior = false
                         
                         //Elimino la suscripción al topic anterior
                         FIRMessaging.messaging().unsubscribe(fromTopic: "/topics/\(majorAnterior)")
                         print("Unsubscribed to \(majorAnterior) topic")
                         
                         //Cambiamos los valores de major y minor anterior por 0
-                        majorAnterior = 0
-                        minorAnterior = 0
+                        for i in 0...4 {
+                            if(anterior[i][0] == suma){
+                                anterior[i][1] = "0"
+                                anterior[i][2] = "0"
+                            }
+                        }
                     }
                     
                 }
@@ -341,26 +390,48 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
         } else {
             //comprobar el estado anterior, conectado a un beacon o no: con la suma de major y minor = 0 (si es mayor que cero estaba conectado a un beacon y por tanto debo registrar el evento y ponerlos a  0 0)
             
-            let major = majorAnterior as Int
-            let minor = majorAnterior as Int
+            //let major = majorAnterior as Int
+            //let minor = minorAnterior as Int
             
             
-            if((major + minor) == 0){ //Estado anterior desconectado
-                //print("Sigo desconectado por lo que no envío evento")
-            }else if (((major + minor) != 0) && (estadoAnterior == true)) {//Estado anterior conectado a un beacon de la lista (significa que nos hemos ido)
-                //print("Me he desconectado del beacon, envío evento")
+            
+            
+            if((majorAnterior + minorAnterior) == 0){ //Estado anterior desconectado
+                print("Sigo desconectado por lo que no envío evento")
+                //El centro comercial no esta en la lista de tiendas del usuario por lo que nunca entrará en el else.
+                //Si me voy del centro comercial, paro el ranging y monitoring de todos los beacons excepto del MyBeacon2000
+                //Se que me he ido del centro comercial cuando el major de la region de la que he salido es el 200 y solo estoy monitorizando 2 regiones (Estoy suponiendo que las regiones se "solapan" (antes de salir de una estro en otra), por tanto cuando voy entrando en el centro comercial, antes de salir de la region 2000 entro en la 1000 y tengo más de dos regiones siendo monitorizadas)
+                if ((region.major == 200)&&(monitoredRegions.count == 2)){
+                    //Parar monitoring y ranging de regiones que ya no me interesan
+                    let pararFinal: Set<CLRegion>  = self.monitoredRegions.subtracting(self.initialRegion) //Devuelve los elemtos que no están en initialRegions -> regiones a parar de monitoring
+                    
+                    //Mostrar por pantalla las regiones incluidas en parar
+                    print("----------pararFinal")
+                    for reg in pararFinal{
+                        print(reg)
+                    }
+                    print("-----------------------")
+                    
+                    for reg in pararFinal{
+                        self.locationManager.stopMonitoring(for: reg)
+                        self.locationManager.stopRangingBeacons(in: reg as! CLBeaconRegion)
+                    }
+                }
+            }
+            else {//Estado anterior conectado a un beacon de la lista (significa que nos hemos ido)
+                print("-------Me he desconectado del beacon, envío evento--------")
                 
                 //Envio notificación al usuario indicandole en qué tienda está
                 let notification = UILocalNotification()
-                notification.alertBody = "Sale de la tienda \(mistiendas.obtenerTienda(major: String(describing: majorAnterior)))"
+                notification.alertBody = "Sale de \(sitio[minorAnterior]) de la tienda \(mistiendas.obtenerTienda(major: String(describing: majorAnterior)))"
                 notification.soundName = "Default"
                 UIApplication.shared.presentLocalNotificationNow(notification)
                 
                 //Registrar evento de desconexión de beacon
                 
-                FIRAnalytics.logEvent(withName: "beacon", parameters: [
-                    "major": majorAnterior ,
-                    "minor": minorAnterior,
+                FIRAnalytics.logEvent(withName: "SaleDeArea", parameters: [
+                    "major": majorAnterior as NSObject ,
+                    "minor": minorAnterior as NSObject,
                     "usuario": emailUsuario as! NSString
                     ])
                 print("Envío evento, he pasado del beacon \(majorAnterior) a irme")
@@ -372,11 +443,15 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
                 print("Unsubscribed to \(majorAnterior) topic")
 
                 //Cambiamos los valores de major y minor anterior por 0
-                majorAnterior = 0
-                minorAnterior = 0
+                for i in 0...4 {
+                    if(anterior[i][0] == suma){
+                        anterior[i][1] = "0"
+                        anterior[i][2] = "0"
+                    }
+                }
             }
             
-            update(distance: .unknown, major: 0, minor: 0)
+            //update(distance: .unknown, major: 0, minor: 0)
         }
     }
     
