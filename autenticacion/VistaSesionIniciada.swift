@@ -11,8 +11,10 @@ import Firebase
 import CoreLocation
 import FirebaseMessaging
 import AdSupport
+//import CoreBluetooth
 
-class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
+
+class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{  //, CBCentralManagerDelegate
 
     @IBOutlet weak var distancia: UILabel!
     var locationManager: CLLocationManager!
@@ -50,6 +52,9 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
     var initialRegion = Set<CLRegion>()   //Solo va a contener una region, la correspondiente al centro comercial
     
     var mistiendas = ColeccionDeTiendas()
+    
+    //var centralManager: CBCentralManager?
+    
     
     override func viewDidLoad() {
         print("-------------------viewDidLoad2------------------")
@@ -90,6 +95,9 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
         self.navigationItem.setRightBarButton(configButton, animated: true)
         self.navigationItem.setLeftBarButton(cerrarSButton, animated: true)
 
+        //Initialise CoreBluetooth Central Manager
+        //centralManager = CBCentralManager(delegate: self,  queue: DispatchQueue.main)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -304,7 +312,6 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
                         pertenece = true
                     }
                 }
-               
                 
                 if (pertenece){ //Si el beacon pertenece a la lista de tiendas envío evento siempre
                     //estadoAnterior = true
@@ -453,7 +460,32 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate {
             
             //update(distance: .unknown, major: 0, minor: 0)
         }
+
     }
+    
+    
+    //Escanear por nuevos BLE (CoreBluetooth)
+     /*func centralManagerDidUpdateState(_ central: CBCentralManager) {
+     print("----------centralManagerDidUpdateState---------")
+     if (central.state == .poweredOn){
+     print("----------central.state == .poweredOn---------")
+     self.centralManager?.scanForPeripherals(withServices: nil, options: nil)
+     }
+     else {
+     print("----------central.state == .poweredOff---------")
+     // do something like alert the user that ble is not on
+     }
+     }
+     
+     //Si encuentra un BLE
+     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+     print("----------didDiscover peripheral---------")
+     print ("Peripheral UID: \(advertisementData)")
+     let notification = UILocalNotification()
+     notification.alertBody = "BLE"
+     notification.soundName = "Default"
+     UIApplication.shared.presentLocalNotificationNow(notification)
+     }*/
     
     //Para que no se muestre la navigation bar
    /* override public func viewWillAppear(_ animated: Bool) {

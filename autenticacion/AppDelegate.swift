@@ -13,15 +13,18 @@ import FBSDKLoginKit
 import FirebaseMessaging
 import UserNotifications
 import CoreLocation
+import CoreBluetooth
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
+class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCentralManagerDelegate {  //, CBCentralManagerDelegate
 
     var window: UIWindow?
     let gcmMessageIDKey = "gcm.message_id"
     let locationManager = CLLocationManager()
     /*var ref: FIRDatabaseReference!
     let userID = FIRAuth.auth()?.currentUser?.uid*/
+    
+    var centralManager: CBCentralManager?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         print("-------------------applicationdidFinishLaunchingWithOptions------------------")
@@ -70,6 +73,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
         GIDSignIn.sharedInstance().delegate = self
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions:launchOptions)
+        
+        
+        //Initialise CoreBluetooth Central Manager
+        centralManager = CBCentralManager(delegate: self,  queue: DispatchQueue.main)
 
         return true
     }
@@ -248,6 +255,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
         }
     }
     //El ranging no se hace cuando la app está en segundo plano, por eso hay que hacer monitoring. Para el buen funcionamiento de la app será necesario hacer diferentes regiones teniendo en cuenta major y minor, para que de esta forma se  envien de manera correcta los eventos
+    
+    //Escanear por nuevos BLE (CoreBluetooth)
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        print("----------centralManagerDidUpdateState---------")
+        if (central.state == .poweredOn){
+            print("----------central.state == .poweredOn---------")
+            
+            //Para que detecte los Eddysrone-uid beacon en el background hay que definir los servicios que queremos que sean escaneados
+            //CBUUID IDENTIFICADOR DEL TIPO DE SERVICIO, EN EL CASO DE LOS EDDYSTONE, ESTE TIPO DE SERVICIO ES FEAA
+            let arrayOfServices: [CBUUID] = [CBUUID(string: "FEAA")]
+            self.centralManager?.scanForPeripherals(withServices: arrayOfServices, options: nil)
+        }
+        else {
+            print("----------central.state == .poweredOff---------")
+            // do something like alert the user that ble is not on
+        }
+    }
+    
+    //Si encuentra un BLE
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        print("----------didDiscover peripheral---------")
+        print ("Peripheral UID: \(advertisementData)")
+        print(advertisementData.debugDescription)
+        print ("Peripheral UID: \(peripheral.identifier)")
+        print ("Peripheral UID: \(peripheral.services)")
+        let notification = UILocalNotification()
+        notification.alertBody = "BLE"
+        notification.soundName = "Default"
+        UIApplication.shared.presentLocalNotificationNow(notification)
+        
+        //Cuando se encuentre un eddystone-uid se envía un evento a firebase
+        FIRAnalytics.logEvent(withName: "BLE", parameters: [
+            "data": advertisementData.debugDescription as! NSString,
+            "usuario": FIRAuth.auth()?.currentUser?.email as! NSString,
+            ])
+    }
+
+    
 }
 
 // [START ios_10_message_handling]
