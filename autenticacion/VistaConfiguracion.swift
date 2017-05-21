@@ -61,6 +61,8 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
             })
             
         })
+        //color tabla
+        //self.tabla.backgroundColor = UIColor.green
     }
     
 
@@ -149,6 +151,14 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
             ref.updateChildValues(childUpdates)
         }
         
+    }
+    
+    /*func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = UIColor.clear
+    }*/
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Lista de tiendas:"
     }
 
 }

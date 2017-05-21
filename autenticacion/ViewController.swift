@@ -16,19 +16,14 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
 
     @IBOutlet weak var nombreUsuario: UITextField!
     @IBOutlet weak var claveUsuario: UITextField!
-    
+
     var handle: FIRAuthStateDidChangeListenerHandle?
     
     override func viewDidLoad() {
         
-        print("-------------------viewDidLoad------------------")
-        
         //Para que el teclado se esconda cuando se pulsa intro es necesario lo siguiente:
         self.nombreUsuario.delegate = self
         self.claveUsuario.delegate = self
-        
-        //let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        //let secondVC =   storyboard.instantiateViewController(withIdentifier: "Vista2") as! VistaSesionIniciada
         
         super.viewDidLoad()
         
@@ -36,29 +31,6 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
         self.navigationItem.setHidesBackButton(true, animated: false)
         
         //Comprobar si hay algún usuario con la sesión iniciada, y en ese caso cargar la siguiente vista
-        
-       /*FIRAuth.auth()?.addStateDidChangeListener { auth, user in
-           /* if let user = user {
-                // User is signed in.
-                
-                /*DispatchQueue.main.async(){
-                    self.performSegue(withIdentifier: "show1", sender: self)
-                }*/
-                
-                
-                self.navigationController!.pushViewController(secondVC, animated: true)
-                
-                
-                //self.navigationController!.popViewController(animated: true)
-                
- 
-            } else {
-                // No user is signed in.
-                super.viewDidLoad()
-            }*/
-        
-        }*/
-        
         if (FIRAuth.auth()?.currentUser) != nil {
             self.performSegue(withIdentifier: "show1", sender: self)
         }
@@ -67,52 +39,11 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
     }
 
     override func didReceiveMemoryWarning() {
-        print("-------------------didReceiveMemoryWarning------------------")
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
-    /*override func viewWillAppear(_ animated: Bool) {
-        print("-------------------viewWillAppear------------------")
-        super.viewWillAppear(animated)
-        // [START auth_listener]
-        handle = FIRAuth.auth()?.addStateDidChangeListener() { (auth, user) in
-            print("-------------------usuario: \(user)------------------")
-           /* if user != nil {
-                /*let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                 let secondVC =   storyboard.instantiateViewController(withIdentifier: "Vista2") as! VistaSesionIniciada
-                 self.navigationController!.pushViewController(secondVC, animated: true)*/
-                DispatchQueue.main.async(){
-                    self.performSegue(withIdentifier: "show1", sender: self)
-                }
-            }*/
-        }
-        // [END auth_listener]
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        print("-------------------viewWillDisappear------------------")
-        super.viewWillDisappear(animated)
-        FIRAuth.auth()?.removeStateDidChangeListener(handle!)
-    }
-    
-    //Para que no se muestre la navigation bar
-    override public func viewWillAppear(_ animated: Bool) {
-        print("-------------------viewWillAppear------------------")
-        super.viewWillAppear(animated)
-        self.navigationController?.isNavigationBarHidden = true
-    }
-    
-    override public func viewWillDisappear(_ animated: Bool) {
-        print("-------------------viewWillDisappear------------------")
-        self.navigationController?.isNavigationBarHidden = false
-        super.viewWillDisappear(animated)
-    }*/
-    
 
     @IBAction func pulsaRegistrarse(_ sender: Any) {
-        print("-------------------pulsaRegistrarse------------------")
         showTextInputPrompt(withMessage: "Email:") { (userPressedOK, email) in
             if let email = email {
                 self.showTextInputPrompt(withMessage: "Contraseña:") { (userPressedOK, password) in
@@ -134,18 +65,17 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
                             // [END create_user]
                         })
                     } else {
-                        self.showMessagePrompt("password can't be empty")
+                        self.showMessagePrompt("El campo contraseña está vacío")
                     }
                 }
             } else {
-                self.showMessagePrompt("email can't be empty")
+                self.showMessagePrompt("El campo email está vacío")
             }
         }
 
     }
     
     @IBAction func pulsaInicioSesion(_ sender: Any) {
-        print("-------------------pulsaInicioSesion------------------")
         if let email = self.nombreUsuario.text, let password = self.claveUsuario.text {
             showSpinner({
                 // [START headless_email_auth]
@@ -163,40 +93,36 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
                 // [END headless_email_auth]
             })
         } else {
-            self.showMessagePrompt("email/password can't be empty")
+            self.showMessagePrompt("Rellene los campos Usuario y Contraseña")
         }
 
     }
     
     @IBAction func pulsaInicioGoogle(_ sender: Any) {
-        print("-------------------pulsaInicioGoogle------------------")
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().signIn()
     }
     
     //Esconder teclado cuando se pulsa fuera (no funciona con el scroll)
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("-------------------touchesBegan------------------")
         self.view.endEditing(true)
     }
     
     //Esconder teclado cuando se da a intro
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("-------------------textFieldShouldReturn------------------")
         nombreUsuario.resignFirstResponder()
         claveUsuario.resignFirstResponder()
         return (true)
     }
     
     @IBAction func pulsaInicioFacebook(_ sender: Any) {
-        print("-------------------pulsaInicioFacebook------------------")
         let loginManager = FBSDKLoginManager()
         loginManager.logOut() //Importante sino da error (com.facebook.sdk.login error 304)
         loginManager.logIn(withReadPermissions: ["email"], from: self, handler: { (result, error) in
             if let error = error {
                 self.showMessagePrompt(error.localizedDescription)
             } else if result!.isCancelled {
-                print("FBLogin cancelled")
+                print("FBLogin cancelado")
             } else {
                 // [START headless_facebook_auth]
                 let credential = FIRFacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
@@ -208,7 +134,6 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
     
     //Inicio Sesion con credenciales
     func firebaseLogin(_ credential: FIRAuthCredential) {
-        print("-------------------firebaseLogin------------------")
         showSpinner({
             if let user = FIRAuth.auth()?.currentUser {
                 // [START link_credential]
@@ -219,8 +144,6 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
                             self.showMessagePrompt(error.localizedDescription)
                             return
                         }
-                        //self.tableView.reloadData()
-                        print("-------------Hay una sesión de google/fb iniciada-----------")
                         self.performSegue(withIdentifier: "show1", sender: self)
                     })
                     // [END_EXCLUDE]
@@ -229,7 +152,6 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
             } else {
                 // [START signin_credential]
                 FIRAuth.auth()?.signIn(with: credential) { (user, error) in
-                    print("------------- No hay una sesión de google/fb iniciada-----------")
                     // [START_EXCLUDE]
                     self.hideSpinner({
                         // [END_EXCLUDE]
@@ -249,6 +171,25 @@ class ViewController: UIViewController, UITextFieldDelegate, GIDSignInUIDelegate
         })
     }
     
+    @IBAction func pulsaRestablecerPassword(_ sender: Any) {
+        showTextInputPrompt(withMessage: "Email:") { (userPressedOK, email) in
+            if let email = email {
+                FIRAuth.auth()?.sendPasswordReset(withEmail: email) { error in
+                    if let error = error {
+                        // An error happened.
+                        self.showMessagePrompt(error.localizedDescription)
+                        return
+                    } else {
+                        // Password reset email sent.
+                        self.showMessagePrompt("Le ha sido enviado un correo de restablecimiento de contraseña.")
+
+                    }
+                }
+            } else {
+                self.showMessagePrompt("El campo email está vacío")
+            }
+        }
+    }
     
 
 }

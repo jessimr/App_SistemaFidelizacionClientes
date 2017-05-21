@@ -15,12 +15,16 @@
 		DC2A51F51EA0EC70000B587D /* salir.png in Resources */ = {isa = PBXBuildFile; fileRef = DC2A51F41EA0EC70000B587D /* salir.png */; };
 		DC2A51F71EA0EC75000B587D /* configuracion.png in Resources */ = {isa = PBXBuildFile; fileRef = DC2A51F61EA0EC75000B587D /* configuracion.png */; };
 		DC2AF8581E83B506006CA4F3 /* VistaConfiguracion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2AF8571E83B506006CA4F3 /* VistaConfiguracion.swift */; };
+		DC3324F01ED1B54C00FFF8E1 /* usuario.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3324EF1ED1B54C00FFF8E1 /* usuario.png */; };
+		DC8B31A11ED0BD670013B6BD /* config.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8B31A01ED0BD670013B6BD /* config.png */; };
+		DC8B31A31ED0BDA90013B6BD /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8B31A21ED0BDA90013B6BD /* exit.png */; };
+		DCA475B01ED09DC900890070 /* UIViewController+Alerts.m in Sources */ = {isa = PBXBuildFile; fileRef = DCA475AF1ED09DC900890070 /* UIViewController+Alerts.m */; };
+		DCA475B51ED0AF3A00890070 /* fondo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DCA475B41ED0AF3A00890070 /* fondo.jpg */; };
 		DCC671751E795D510057D0E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC671741E795D510057D0E9 /* AppDelegate.swift */; };
 		DCC671771E795D510057D0E9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC671761E795D510057D0E9 /* ViewController.swift */; };
 		DCC6717C1E795D510057D0E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCC6717B1E795D510057D0E9 /* Assets.xcassets */; };
 		DCC6717F1E795D510057D0E9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCC6717D1E795D510057D0E9 /* LaunchScreen.storyboard */; };
 		DCC671871E795E1F0057D0E9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC671861E795E1F0057D0E9 /* GoogleService-Info.plist */; };
-		DCCD229E1E7A8CAE00F00D32 /* UIViewController+Alerts.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCD229D1E7A8CAE00F00D32 /* UIViewController+Alerts.m */; };
 		DCCD22A01E7AA33700F00D32 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCD229F1E7AA33700F00D32 /* Bolts.framework */; };
 		DCCD22A21E7AA35B00F00D32 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCD22A11E7AA35B00F00D32 /* FBSDKCoreKit.framework */; };
 		DCCD22A41E7AA37600F00D32 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCD22A31E7AA37600F00D32 /* FBSDKLoginKit.framework */; };
@@ -38,6 +42,12 @@
 		DC2A51F41EA0EC70000B587D /* salir.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = salir.png; sourceTree = "<group>"; };
 		DC2A51F61EA0EC75000B587D /* configuracion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = configuracion.png; sourceTree = "<group>"; };
 		DC2AF8571E83B506006CA4F3 /* VistaConfiguracion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VistaConfiguracion.swift; sourceTree = "<group>"; };
+		DC3324EF1ED1B54C00FFF8E1 /* usuario.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = usuario.png; sourceTree = "<group>"; };
+		DC8B31A01ED0BD670013B6BD /* config.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = config.png; sourceTree = "<group>"; };
+		DC8B31A21ED0BDA90013B6BD /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit.png; sourceTree = "<group>"; };
+		DCA475AF1ED09DC900890070 /* UIViewController+Alerts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Alerts.m"; sourceTree = "<group>"; };
+		DCA475B11ED09DE500890070 /* UIViewController+Alerts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Alerts.h"; sourceTree = "<group>"; };
+		DCA475B41ED0AF3A00890070 /* fondo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fondo.jpg; sourceTree = "<group>"; };
 		DCC671711E795D510057D0E9 /* autenticacion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = autenticacion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC671741E795D510057D0E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DCC671761E795D510057D0E9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -46,9 +56,7 @@
 		DCC671801E795D510057D0E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCC671861E795E1F0057D0E9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DCCD22991E7A87E600F00D32 /* autenticacion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = autenticacion.entitlements; sourceTree = "<group>"; };
-		DCCD229B1E7A8C8E00F00D32 /* UIViewController+Alerts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+Alerts.h"; path = "../aplicacion/aplicacion/UIViewController+Alerts.h"; sourceTree = "<group>"; };
 		DCCD229C1E7A8CAE00F00D32 /* autenticacion-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "autenticacion-Bridging-Header.h"; sourceTree = "<group>"; };
-		DCCD229D1E7A8CAE00F00D32 /* UIViewController+Alerts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+Alerts.m"; path = "../aplicacion/aplicacion/UIViewController+Alerts.m"; sourceTree = "<group>"; };
 		DCCD229F1E7AA33700F00D32 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "FacebookSDKs-iOS-4.20.1/Bolts.framework"; sourceTree = "<group>"; };
 		DCCD22A11E7AA35B00F00D32 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "FacebookSDKs-iOS-4.20.1/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		DCCD22A31E7AA37600F00D32 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "FacebookSDKs-iOS-4.20.1/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
@@ -86,6 +94,10 @@
 		DC2A51F81EA0EC81000B587D /* Imagenes */ = {
 			isa = PBXGroup;
 			children = (
+				DCA475B41ED0AF3A00890070 /* fondo.jpg */,
+				DC3324EF1ED1B54C00FFF8E1 /* usuario.png */,
+				DC8B31A01ED0BD670013B6BD /* config.png */,
+				DC8B31A21ED0BDA90013B6BD /* exit.png */,
 				DC2A51F41EA0EC70000B587D /* salir.png */,
 				DC2A51F61EA0EC75000B587D /* configuracion.png */,
 			);
@@ -133,8 +145,8 @@
 		DCCD229A1E7A8C6200F00D32 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				DCCD229D1E7A8CAE00F00D32 /* UIViewController+Alerts.m */,
-				DCCD229B1E7A8C8E00F00D32 /* UIViewController+Alerts.h */,
+				DCA475AF1ED09DC900890070 /* UIViewController+Alerts.m */,
+				DCA475B11ED09DE500890070 /* UIViewController+Alerts.h */,
 				DCCD229C1E7A8CAE00F00D32 /* autenticacion-Bridging-Header.h */,
 			);
 			name = "Supporting Files";
@@ -230,7 +242,11 @@
 				DC2A51F51EA0EC70000B587D /* salir.png in Resources */,
 				DCC6717F1E795D510057D0E9 /* LaunchScreen.storyboard in Resources */,
 				DCC671871E795E1F0057D0E9 /* GoogleService-Info.plist in Resources */,
+				DC3324F01ED1B54C00FFF8E1 /* usuario.png in Resources */,
+				DC8B31A31ED0BDA90013B6BD /* exit.png in Resources */,
+				DC8B31A11ED0BD670013B6BD /* config.png in Resources */,
 				DC2A51F71EA0EC75000B587D /* configuracion.png in Resources */,
+				DCA475B51ED0AF3A00890070 /* fondo.jpg in Resources */,
 				DCC6717C1E795D510057D0E9 /* Assets.xcassets in Resources */,
 				DC2A51F01EA0E34F000B587D /* Main.storyboard in Resources */,
 			);
@@ -292,10 +308,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCC671771E795D510057D0E9 /* ViewController.swift in Sources */,
+				DCA475B01ED09DC900890070 /* UIViewController+Alerts.m in Sources */,
 				DC2AF8581E83B506006CA4F3 /* VistaConfiguracion.swift in Sources */,
 				DC2826C01E7A7D290060F57A /* VistaSesionIniciada.swift in Sources */,
 				DCC671751E795D510057D0E9 /* AppDelegate.swift in Sources */,
-				DCCD229E1E7A8CAE00F00D32 /* UIViewController+Alerts.m in Sources */,
 				DC0308A91E829BA400B0DFFD /* Datos.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

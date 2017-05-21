@@ -16,18 +16,15 @@ import CoreLocation
 import CoreBluetooth
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCentralManagerDelegate {  //, CBCentralManagerDelegate
-
+class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCentralManagerDelegate {
+    
+    //Variables globales
     var window: UIWindow?
     let gcmMessageIDKey = "gcm.message_id"
     let locationManager = CLLocationManager()
-    /*var ref: FIRDatabaseReference!
-    let userID = FIRAuth.auth()?.currentUser?.uid*/
-    
     var centralManager: CBCentralManager?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        print("-------------------applicationdidFinishLaunchingWithOptions------------------")
         
         locationManager.delegate = self
         UIApplication.shared.cancelAllLocalNotifications()
@@ -82,13 +79,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     }
     
     func application(_ application: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any])-> Bool {
-        print("-------------------application------------------")
         return self.application(application, open: url, sourceApplication:options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String, annotation: [:])
 
     }
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        print("-------------------applicationsourceApplication------------------")
         if GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation) {
             return true
         }
@@ -96,17 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
             annotation: annotation)
     }
     
-   /* func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!, withError error: NSError!) {
-        print("-------------------signIndidSignInForUser------------------")
-        if let error = error {
-            print(error.localizedDescription)
-            return
-        }
-        // ...
-    }*/
-    
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
-        print("-------------------signIndidSignInForUser------------------")
         guard let controller = GIDSignIn.sharedInstance().uiDelegate as? ViewController else { return }
         
         if let error = error {
@@ -123,7 +108,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     
     // [START receive_message]
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
-        print("-------------------applicationdidReceiveRemoteNotification------------------")
         // If you are receiving a notification message while your app is in the background,
         // this callback will not be fired till the user taps on the notification launching the application.
         // TODO: Handle data of notification
@@ -139,7 +123,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("-------------------applicationdidReceiveRemoteNotificationfetchCompletionHandler------------------")
         // If you are receiving a notification message while your app is in the background,
         // this callback will not be fired till the user taps on the notification launching the application.
         // TODO: Handle data of notification
@@ -158,11 +141,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     
     // [START refresh_token]
     func tokenRefreshNotification(_ notification: Notification) {
-        print("-------------------tokenRefreshNotification------------------")
+        let ref = FIRDatabase.database().reference()
         if let refreshedToken = FIRInstanceID.instanceID().token() {
             print("InstanceID token: \(refreshedToken)")
-            /*//Guardar el token en la base de datos para luego poder leerlo en la cloud function
-            self.ref.child("users/\(userID!)/tokens").setValue(refreshedToken)*/
+            //Guardar el token en la base de datos para luego poder leerlo en la cloud function
+            ref.child("users/\(FIRAuth.auth()?.currentUser?.uid)/tokens").setValue(refreshedToken)
         }
         
         // Connect to FCM since connection may have failed when attempted before having a token.
@@ -172,7 +155,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     
     // [START connect_to_fcm]
     func connectToFcm() {
-        print("-------------------connectToFcm------------------")
         // Won't connect since there is no token
         guard FIRInstanceID.instanceID().token() != nil else {
             return;
@@ -192,7 +174,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     // [END connect_to_fcm]
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("-------------------applicationdidFailToRegisterForRemoteNotificationsWithError------------------")
         print("Unable to register for remote notifications: \(error.localizedDescription)")
     }
     
@@ -200,7 +181,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     // If swizzling is disabled then this function must be implemented so that the APNs token can be paired to
     // the InstanceID token.
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("-------------------applicationdidRegisterForRemoteNotificationsWithDeviceToken------------------")
         print("APNs token retrieved: \(deviceToken)")
         
         // With swizzling disabled you must set the APNs token here.
@@ -209,48 +189,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     
     // [START connect_on_active]
     func applicationDidBecomeActive(_ application: UIApplication) {
-        print("-------------------applicationDidBecomeActive------------------")
         connectToFcm()
     }
     // [END connect_on_active]
     
     // [START disconnect_from_fcm]
     func applicationDidEnterBackground(_ application: UIApplication) {
-        print("-------------------applicationDidEnterBackground------------------")
         FIRMessaging.messaging().disconnect()
         print("Disconnected from FCM.")
     }
     // [END disconnect_from_fcm]
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        print("-------------------locationManagerdidEnterRegion------------------")
         if (region as? CLBeaconRegion) != nil {
-            /*let beacon = region as! CLBeaconRegion
-            let major = beacon.major //->Problema: al estar la región definida por el UUID y no por el major/minor, al tratar de conseguir el major se obtiene nil
-            print(major)*/
-            /*let notification = UILocalNotification()
-            notification.alertBody = "Entra en la region de beacon" //\(mistiendas.obtenerTienda(major: major)
-            notification.soundName = "Default"
-            UIApplication.shared.presentLocalNotificationNow(notification)*/
-            
-            //-> hace que se inicie el ranging
+            //Hace que se inicie el ranging
             locationManager.requestState(for: region)
         }
         
     }
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        print("-------------------locationManagerdidExitRegion------------------")
         if (region as? CLBeaconRegion) != nil {
-            /*let beacon = region as! CLBeaconRegion
-            let major = beacon.proximityUUID
-            print(major)*/
-            /*let notification = UILocalNotification()
-            notification.alertBody = "Sale de la region de beacon"
-            notification.soundName = "Default"
-            UIApplication.shared.presentLocalNotificationNow(notification)*/
-            
-            //-> hace que se inicie el ranging
+            //Hace que se inicie el ranging
             locationManager.requestState(for: region)
         }
     }
@@ -258,26 +218,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     
     //Escanear por nuevos BLE (CoreBluetooth)
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        print("----------centralManagerDidUpdateState---------")
         if (central.state == .poweredOn){
-            print("----------central.state == .poweredOn---------")
-            
             //Para que detecte los Eddysrone-uid beacon en el background hay que definir los servicios que queremos que sean escaneados
             //CBUUID IDENTIFICADOR DEL TIPO DE SERVICIO, EN EL CASO DE LOS EDDYSTONE, ESTE TIPO DE SERVICIO ES FEAA
             let arrayOfServices: [CBUUID] = [CBUUID(string: "FEAA")]
             self.centralManager?.scanForPeripherals(withServices: arrayOfServices, options: nil)
         }
         else {
-            print("----------central.state == .poweredOff---------")
             // do something like alert the user that ble is not on
         }
     }
     
     //Si encuentra un BLE
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        print("----------didDiscover peripheral---------")
         print ("Peripheral UID: \(advertisementData)")
-        print(advertisementData.debugDescription)
+        print("Sting : \(advertisementData.debugDescription)")
+        let datos = advertisementData["kCBAdvDataServiceData"] as! NSDictionary
+        print ("datos \(datos)")
+        print ("valor \(datos.allValues)")
         print ("Peripheral UID: \(peripheral.identifier)")
         print ("Peripheral UID: \(peripheral.services)")
         let notification = UILocalNotification()
@@ -287,8 +245,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
         
         //Cuando se encuentre un eddystone-uid se envía un evento a firebase
         FIRAnalytics.logEvent(withName: "BLE", parameters: [
-            "data": advertisementData.debugDescription as! NSString,
+            "data": String(describing:datos.allValues) as NSString,
             "usuario": FIRAuth.auth()?.currentUser?.email as! NSString,
+            "uid": FIRAuth.auth()?.currentUser?.uid as! NSString,
             ])
     }
 
@@ -303,7 +262,6 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("-------------------userNotificationCenterwillPresent------------------")
         let userInfo = notification.request.content.userInfo
         // Print message ID.
         if let messageID = userInfo[gcmMessageIDKey] {
@@ -320,7 +278,6 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        print("-------------------userNotificationCenterdidReceive------------------")
         let userInfo = response.notification.request.content.userInfo
         // Print message ID.
         if let messageID = userInfo[gcmMessageIDKey] {
@@ -342,7 +299,6 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
 extension AppDelegate : FIRMessagingDelegate {
     // Receive data message on iOS 10 devices while app is in the foreground.
     func applicationReceivedRemoteMessage(_ remoteMessage: FIRMessagingRemoteMessage) {
-        print("-------------------applicationReceivedRemoteMessage------------------")
         print(remoteMessage.appData)
     }
 }
