@@ -23,6 +23,9 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
         
         super.viewDidLoad()
         
+        //Configurar boton de cerrar sesision
+        configLogOutButton();
+        
         self.ref = FIRDatabase.database().reference()
         
         //Registrar el nombre del usuario en la base de datos
@@ -30,11 +33,24 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
 
         self.ref2 = self.ref.child("users").child(userID!).child("tiendas")
         
+        leerKeysDeLasTiendasDeLaBD()
+        
+        //color tabla
+        //self.tabla.backgroundColor = UIColor.green
+    }
+    
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func leerKeysDeLasTiendasDeLaBD(){
         var arrayKey: [String] = []
         
         //Leer keys asociado a la tiendas guardadas en la base de datos <- necesario para poder borrarlas
         self.ref2.observeSingleEvent(of: .value, with: { snapshot in
-                //print(snapshot)
+            //print(snapshot)
             for child in snapshot.children {
                 let key = (child as AnyObject).key!
                 print("key: \(key)")
@@ -54,21 +70,29 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
                         arrayKey.remove(at: 0)
                     }
                 }
-                
                 //print (self.mistiendas.tiendas)
                 
                 self.tabla.reloadData()  //Recargar tabla (la lectura de firebase database se hace de manera asíncrona, por eso es necesario ponerlo aqui)
             })
             
         })
-        //color tabla
-        //self.tabla.backgroundColor = UIColor.green
     }
     
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func configLogOutButton(){
+        // Seleccionar imagen
+        let buttonCerrarSIcon = UIImage(named: "Cerrar sesion")
+        
+        //Añadir barbutton
+        let cerrarSButton: UIBarButtonItem = UIBarButtonItem(title: "Salir", style: UIBarButtonItemStyle.plain, target: self, action: #selector(VistaConfiguracion.pulsaCerrarSesion))
+        cerrarSButton.image = buttonCerrarSIcon
+        self.tabBarController?.navigationItem.setLeftBarButton(cerrarSButton, animated: true)
+    }
+    
+    func pulsaCerrarSesion(sender:UIButton) {
+        try! FIRAuth.auth()!.signOut()
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let secondVC =   storyboard.instantiateViewController(withIdentifier: "Vista1") as! ViewController
+        self.navigationController!.pushViewController(secondVC, animated: true)
     }
     
    /* override func viewWillAppear(_ animated: Bool) {
@@ -125,15 +149,9 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
             self.mistiendas.switchState(position: indexPath.row, state: "0")
             
             //Borrar tienda de la base de datos
-            ref.child("users").child(userID!).child("tiendas").child(self.mistiendas.tiendas[indexPath.row][3]).child("major").removeValue(completionBlock: { (error, ref) in
-                if error != nil {
-                    print("error \(error)")
-                }
-            })
-            self.mistiendas.tiendas[indexPath.row][3] = "0"
+            borrarTiendaDeBBDD(position: indexPath.row)
             
             tableView.reloadData()
-            
         }
         else
         {
@@ -141,24 +159,39 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
             self.mistiendas.switchState(position: indexPath.row, state: "1")
             
             //Añadir tienda a la la base de datos
-            let key = ref.child("users").child(userID!).child("tiendas").childByAutoId().key
-            self.mistiendas.tiendas[indexPath.row][3] = key
-            //self.arrayKey.append(key)
-            //print("añado tienda pos \(self.n)")
-            //print(self.arrayKey)
-            let post = ["major": self.mistiendas.tiendas[indexPath.row][1] ]
-            let childUpdates = ["/users/\(userID!)/tiendas/\(key)": post]
-            ref.updateChildValues(childUpdates)
+            addTiendaABBDD(position: indexPath.row)
+            
         }
         
     }
+    
+    func borrarTiendaDeBBDD(position: Int){
+        ref.child("users").child(userID!).child("tiendas").child(self.mistiendas.tiendas[position][3]).child("major").removeValue(completionBlock: { (error, ref) in
+            if error != nil {
+                print("error \(error)")
+            }
+        })
+        self.mistiendas.tiendas[position][3] = "0"
+    }
+    
+    func addTiendaABBDD(position: Int){
+        let key = ref.child("users").child(userID!).child("tiendas").childByAutoId().key
+        self.mistiendas.tiendas[position][3] = key
+        //self.arrayKey.append(key)
+        //print("añado tienda pos \(self.n)")
+        //print(self.arrayKey)
+        let post = ["major": self.mistiendas.tiendas[position][1] ]
+        let childUpdates = ["/users/\(userID!)/tiendas/\(key)": post]
+        ref.updateChildValues(childUpdates)
+    }
+    
     
     /*func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.backgroundColor = UIColor.clear
     }*/
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Lista de tiendas:"
+        return "TIENDAS:"
     }
 
 }
