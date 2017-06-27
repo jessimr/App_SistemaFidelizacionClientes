@@ -48,7 +48,7 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
     func leerKeysDeLasTiendasDeLaBD(){
         var arrayKey: [String] = []
         
-        //Leer keys asociado a la tiendas guardadas en la base de datos <- necesario para poder borrarlas
+        //Leer keys asociado a las tiendas guardadas en la base de datos <- necesario para poder borrarlas
         self.ref2.observeSingleEvent(of: .value, with: { snapshot in
             //print(snapshot)
             for child in snapshot.children {
@@ -155,7 +155,7 @@ class VistaConfiguracion: UIViewController, UITableViewDataSource, UITableViewDe
         }
         else
         {
-            //Camia estado de la tienda
+            //Cambia estado de la tienda
             self.mistiendas.switchState(position: indexPath.row, state: "1")
             
             //Añadir tienda a la la base de datos

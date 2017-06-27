@@ -9,20 +9,54 @@
 import UIKit
 import Firebase
 
-class Ofertas: UIViewController {
+class Ofertas: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    @IBOutlet weak var tabla: UITableView!
+    var ref: FIRDatabaseReference!
+    var ref2: FIRDatabaseReference!
+    let userID = FIRAuth.auth()?.currentUser?.uid
+    var bonos: [String] = []
+    var keys: [String] = []
+    var tiendas: [String] = []
+    var fechas: [String] = []
+    var primeraVez = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //Configurar boton de cerrar sesision
         configLogOutButton();
         
+        self.ref = FIRDatabase.database().reference()
+        
+        self.ref2 = self.ref.child("users").child(userID!).child("ofertas")
+        
+        tabla.rowHeight = 120
+        
+        leerOfertasDeLaBD()
         
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func leerOfertasDeLaBD(){
+        
+        //Leer keys asociado a las ofertas guardadas en la base de datos <- necesario para poder borrarlas
+            self.ref2.observe(FIRDataEventType.childAdded, with: { (snapshot: FIRDataSnapshot) in //<- Aqui entra cada vez que se añade una oferta a la lista
+                self.bonos.append((snapshot.value as AnyObject).object(forKey: "bono") as! String)
+                self.tiendas.append((snapshot.value as AnyObject).object(forKey: "nombre") as! String)
+                self.fechas.append((snapshot.value as AnyObject).object(forKey: "validez") as! String)
+                self.keys.append((snapshot as AnyObject).key!)
+                print ("bonos: \(self.bonos)")
+                print("tiendas: \(self.tiendas)")
+                print("fechas: \(self.fechas)")
+                print("key: \(self.keys)")
+                self.tabla.reloadData()  //Recargar tabla (la lectura de firebase database se hace de manera asíncrona, por eso es necesario ponerlo aqui)
+            })
+        
     }
     
     func configLogOutButton(){
@@ -63,11 +97,20 @@ class Ofertas: UIViewController {
     //Número de filas en cada renglón
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return self.bonos.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+/*func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "Cell")
+        cell.textLabel!.text = self.bonos[indexPath.row]
+        return cell
+    }*/
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CeldaTablaOfertasTableViewCell
+        cell.promocion.text = self.bonos[indexPath.row]
+        cell.nombre.text = self.tiendas[indexPath.row]
+        cell.validez.text = "Válido hasta: " + self.fechas[indexPath.row]
         return cell
     }
     
@@ -78,4 +121,34 @@ class Ofertas: UIViewController {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "OFERTAS:"
     }
+    
+    // this method handles row deletion
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            
+            //borrarlo de la base de datos
+            ref.child("users").child(userID!).child("ofertas").child(self.keys[indexPath.row]).removeValue(completionBlock: { (error, ref) in
+                if error != nil {
+                    print("error \(error)")
+                }
+                
+                // remove the item from the data model
+                self.bonos.remove(at: indexPath.row)
+                self.keys.remove(at: indexPath.row)
+                self.tiendas.remove(at: indexPath.row)
+                self.fechas.remove(at: indexPath.row)
+                
+                // delete the table view row
+                self.tabla.deleteRows(at: [indexPath], with: .fade)
+                
+            })
+            
+        }
+    }
+    //dar nombre al boton
+    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+        return "Eliminar"
+    }
+    
 }

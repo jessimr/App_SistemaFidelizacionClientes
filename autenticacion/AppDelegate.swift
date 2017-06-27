@@ -16,13 +16,13 @@ import CoreLocation
 import CoreBluetooth
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCentralManagerDelegate {
-    
+class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCentralManagerDelegate{//
     //Variables globales
     var window: UIWindow?
     let gcmMessageIDKey = "gcm.message_id"
     let locationManager = CLLocationManager()
     var centralManager: CBCentralManager?
+    var tokenNotifications: String?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -141,11 +141,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     
     // [START refresh_token]
     func tokenRefreshNotification(_ notification: Notification) {
-        let ref = FIRDatabase.database().reference()
         if let refreshedToken = FIRInstanceID.instanceID().token() {
             print("InstanceID token: \(refreshedToken)")
-            //Guardar el token en la base de datos para luego poder leerlo en la cloud function
-            ref.child("users/\(FIRAuth.auth()?.currentUser?.uid)/tokens").setValue(refreshedToken)
+            self.tokenNotifications = refreshedToken
         }
         
         // Connect to FCM since connection may have failed when attempted before having a token.
@@ -168,6 +166,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
                 print("Unable to connect with FCM. \(error)")
             } else {
                 print("Connected to FCM.")
+                if let refreshedToken = FIRInstanceID.instanceID().token() {
+                    print("InstanceID token: \(refreshedToken)")
+                    self.tokenNotifications = refreshedToken
+                }
             }
         }
     }
@@ -203,7 +205,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if (region as? CLBeaconRegion) != nil {
             //Hace que se inicie el ranging
+            //vistaSesionIniciada.scan()
             locationManager.requestState(for: region)
+
         }
         
     }
@@ -231,24 +235,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, CBCent
     
     //Si encuentra un BLE
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        print ("Peripheral UID: \(advertisementData)")
-        print("Sting : \(advertisementData.debugDescription)")
-        let datos = advertisementData["kCBAdvDataServiceData"] as! NSDictionary
+        print ("advertisementData: \(advertisementData)")
+     
+        let datos = advertisementData["kCBAdvDataServiceData"] as? NSDictionary
         print ("datos \(datos)")
-        print ("valor \(datos.allValues)")
-        print ("Peripheral UID: \(peripheral.identifier)")
-        print ("Peripheral UID: \(peripheral.services)")
-        let notification = UILocalNotification()
-        notification.alertBody = "BLE"
-        notification.soundName = "Default"
-        UIApplication.shared.presentLocalNotificationNow(notification)
+        print ("valor \(datos?.allValues)")
+        let ns = String(describing: datos!.allValues)
+        print("Srting \(ns)")
         
-        //Cuando se encuentre un eddystone-uid se envía un evento a firebase
-        FIRAnalytics.logEvent(withName: "BLE", parameters: [
-            "data": String(describing:datos.allValues) as NSString,
-            "usuario": FIRAuth.auth()?.currentUser?.email as! NSString,
-            "uid": FIRAuth.auth()?.currentUser?.uid as! NSString,
-            ])
+        let start = ns.index(ns.startIndex, offsetBy: 2)
+        let end = ns.index(ns.endIndex, offsetBy: -2)
+        let range = start..<end
+        
+        let hmac = ns.substring(with: range)
+        
+        print("HMAC \(hmac)")
+        
+        let refseg = FIRDatabase.database().reference()
+        let uid = FIRAuth.auth()?.currentUser?.uid
+        
+        print ("token \(tokenNotifications)")
+        print ("uid \(uid)")
+        
+        //Registrar el token
+        refseg.child("users/\(uid!)/tokens").setValue(tokenNotifications)
+        
+        //Registrar el BLE en la base de datos
+        refseg.child("users/\(uid!)/seguridad").setValue(hmac)
+     
     }
 
     

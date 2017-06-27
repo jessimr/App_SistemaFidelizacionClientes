@@ -13,9 +13,9 @@ import FirebaseMessaging
 import AdSupport
 import FBSDKCoreKit
 import FBSDKLoginKit
+//import CoreBluetooth
 
-
-class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
+class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{ //, CBCentralManagerDelegate
 
 
     @IBOutlet weak var foto: UIImageView!
@@ -46,6 +46,7 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
     
     var ref: FIRDatabaseReference!
     var ref2: FIRDatabaseReference!
+    var refseg: FIRDatabaseReference!
     
     var newRegions = Set<CLRegion>()
     var monitoredRegions = Set<CLRegion>()
@@ -53,6 +54,10 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
     var initialRegion = Set<CLRegion>()   //Solo va a contener una region, la correspondiente al centro comercial
     
     var mistiendas = ColeccionDeTiendas()
+    
+    //var centralManager: CBCentralManager?
+    
+    var ultimo:String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,16 +72,25 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
         //Referencia a la base de datos
         self.ref = FIRDatabase.database().reference()
         self.ref2 = FIRDatabase.database().reference()
+        self.refseg = FIRDatabase.database().reference()
         self.ref = self.ref.child("users").child(uid!).child("tiendas")
        
         //Configurar boton de cerrar sesision
         configLogOutButton();
+        
+        // Start up the CBCentralManager
+        //centralManager = CBCentralManager(delegate: self, queue: nil)
         
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
     }
     
     func mostrarDatosUsuario(){
@@ -198,19 +212,19 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
         monitoredRegions = locationManager.monitoredRegions //The location manager persists region data between launches of your app.
         rangedRegions = locationManager.rangedRegions
         
-        print("----------monitoredRegions")
+        /*print("----------monitoredRegions")
         //Mostrar por pantalla las regiones incluidas en monitoredRegions
         for reg in self.monitoredRegions{
             print(reg)
         }
-        print("-----------------------")
+        print("-----------------------")*/
         
-        print("----------rangedRegions")
+        /*print("----------rangedRegions")
         //Mostrar por pantalla las regiones incluidas en monitoredRegions
         for reg in self.rangedRegions{
             print(reg)
         }
-        print("-----------------------")
+        print("-----------------------")*/
         
         //Intentar monitorizar las nuevas regiones de los vecinos y parar de monitorizar regiones que ya no interesan -> las regiones de los vecinos en el database
         //Tomo major y minor de la región, los convierto a String y los "sumo"
@@ -247,7 +261,9 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
                 //hacer comprobación de si el major del beacon que estoy detectando pertenece a alguna de las tiendas seleccionadas en la configuración del usuario, si pertenece hago lo demás, sino no
                 
                 if (beaconPerteneceALista(beacon: beacon)){ //Si el beacon pertenece a la lista de tiendas envío evento siempre
-                    
+                    //Escaneo beacon seguridad
+                    //scan()
+
                     //Envio notificación al usuario indicandole en qué tienda está
                     enviarNotificacion(cuerpo: "Está en \(sitio[beacon.minor as Int]) de la tienda \(mistiendas.obtenerTienda(major: String(describing: beacon.major)))");
                     
@@ -256,6 +272,8 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
                 
                     //Cambiamos los valores de major y minor anterior por los actuales
                     actualizaMajorAnteriorYMinorAnterior(major: String (describing: beacon.major), minor: String (describing: beacon.minor), region: suma);
+                    
+                    //centralManager?.stopScan()
                     
                 }
                 
@@ -295,6 +313,10 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
         let mj = String(describing: beacon.major)
         let mn = String(describing: beacon.minor)
         let suma = mj+mn
+        
+        //Indico este beacon como ultimo -> para escribirlo en la base de datos y que se ejecute bien lo de la seguridad
+        ultimo = suma
+        refseg.child("users/\(uid!)/iBeacon").setValue(ultimo)
         
         //Leer de la base de datos los beacos a monitorizar
         self.ref2.child("beacons").child(suma).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -419,5 +441,82 @@ class VistaSesionIniciada: UIViewController, CLLocationManagerDelegate{
             }
         }
     }
+    
+    
+/*    //No escanea los beacons
+    //Escanear por nuevos BLE (CoreBluetooth)
+   func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        if (central.state == .poweredOn){
+            print(central.state)
+            //Para que detecte los Eddysrone-uid beacon en el background hay que definir los servicios que queremos que sean escaneados
+            //CBUUID IDENTIFICADOR DEL TIPO DE SERVICIO, EN EL CASO DE LOS EDDYSTONE, ESTE TIPO DE SERVICIO ES FEAA
+            //let arrayOfServices: [CBUUID] = [CBUUID(string: "FEAA")]
+            //let options = [CBCentralManagerScanOptionAllowDuplicatesKey : true]
+            //self.centralManager?.scanForPeripherals(withServices: nil, options: nil)
+            //scan()
+        }
+        else {
+            // do something like alert the user that ble is not on
+        }
+    }
+    
+    func scan() {
+        print("------scan------")
+        
+        /*centralManager?.scanForPeripherals(
+            withServices: nil, options: [  //[transferServiceUUID]
+                CBCentralManagerScanOptionAllowDuplicatesKey : NSNumber(value: true as Bool)
+            ]
+        )*/
+        let arrayOfServices: [CBUUID] = [CBUUID(string: "FEAA")]
+        self.centralManager?.scanForPeripherals(withServices: arrayOfServices, options: nil)
+        
+        print("Scanning started")
+    }
+    
+    //Si encuentra un BLE
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        print ("advertisementData: \(advertisementData)")
+        
+        //print("kCBAdvDataIsConnectable : \(advertisementData["kCBAdvDataIsConnectable"])")
+        //print("kCBAdvDataManufacturerData : \(advertisementData["kCBAdvDataManufacturerData"])")
+        //print("kCBAdvDataLocalName : \(advertisementData["kCBAdvDataLocalName"])")
+        //print(advertisementData[CBAdvertisementDataOverflowServiceUUIDsKey] as? [CBUUID])
+        //print (advertisementData[CBAdvertisementDataSolicitedServiceUUIDsKey] as? [CBUUID])
+        //print(advertisementData["CBAdvertisementServiceDataKey"] as? String)
+        //print("data : \(advertisementData["data"])")
+        let datos = advertisementData["kCBAdvDataServiceData"] as? NSDictionary
+        print ("datos \(datos)")
+        print ("valor \(datos?.allValues)")
+        //print ("peripheral.identifier: \(peripheral.identifier)")
+        //print ("peripheral.services: \(peripheral.services)")
+        
+        let refseg = FIRDatabase.database().reference()
+        
+        //Obtener el token actual
+        let token = FIRInstanceID.instanceID().token()
+        print ("token \(token)")
+        print ("uid \(uid)")
+        
+        //Registrar el token
+        refseg.child("users/\(uid!)/tokens").setValue(token!)
+        
+        //Registrar el último iBeacon detectado
+        self.refseg.child("users/\(uid!)/iBeacon").setValue(ultimo)
+        
+        //Registrar el BLE en la base de datos
+        self.refseg.child("users/\(uid!)/seguridad").setValue(String(describing:datos!.allValues))
+        
+        
+        //Cuando se encuentre un eddystone-uid se envía un evento a firebase -> si mando el evento al superponerse con los de las tiendas me se queda la app colgada
+       /* FIRAnalytics.logEvent(withName: "BLE", parameters: [
+            "data": String(describing:datos.allValues) as NSString,
+            "usuario": FIRAuth.auth()?.currentUser?.email as! NSString,
+            "uid": FIRAuth.auth()?.currentUser?.uid as! NSString,
+            ])*/
+        
+    }*/
+    
+    
     
 }
