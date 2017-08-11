@@ -25,17 +25,24 @@ class ColeccionDeTiendas {
                                 ["Parfois", "111", "0", "0"],
                                 ["Misako", "112", "0", "0"]]
     
+    //Método para cambiar el estado de una tienda (seleccionado o no por el usuario)
     func switchState (position: Int, state: String){
         tiendas[position][2] = state
     }
     
+    //Método para obtener el nombre de la tienda a partir del major asociado a ella
     func obtenerTienda (major: String) -> String{
         var tienda = ""
-        for i in 0...12{
+        for i in 0...(tiendas.count-1){
             if(tiendas[i][1] == major){
                 tienda = tiendas[i][0]
             }
         }
         return tienda
+    }
+    
+    //Método para guardar key
+    func guardarKey (position: Int, key: String) {
+        tiendas[position][3] = key
     }
 }

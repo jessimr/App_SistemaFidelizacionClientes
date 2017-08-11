@@ -16,7 +16,8 @@ class CeldaTablaOfertasTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
+        //Items o campos que aparecerán en la celda
         nombre.text = ""
         promocion.text = ""
         validez.text = ""
@@ -24,8 +25,6 @@ class CeldaTablaOfertasTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
 
 }
